@@ -42,6 +42,7 @@ public class Main extends Application{
             window.setScene(scene);
             pane.getChildren().add(root);
             root.getChildren().add(characterView);
+
             scene.setOnKeyPressed(event -> {
                 switch (event.getCode()){
                     case UP: kUp = true; break;
@@ -77,10 +78,10 @@ public class Main extends Application{
                 isJump = true;
             }
             if(kRight){
-                x -= 10;
+                x -= 5;
             }
             if(kLeft){
-                x += 10;
+                x += 5;
             }
         }
 
@@ -109,8 +110,8 @@ public class Main extends Application{
       public void gravity(){
           characterView.setY(y);
           y += gravity;
-         if(y >= 250){
-             y = 250;
+         if(y >= 500){
+             y = 500;
              grav = 0;
              isJump = false;
          }
