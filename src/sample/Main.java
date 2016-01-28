@@ -9,6 +9,7 @@ import javafx.scene.image.Image;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
+import sample.Levels.Menu;
 
 import java.util.ArrayList;
 
@@ -26,6 +27,9 @@ public class Main extends Application{
         ArrayList<ImageView> backgroundViewer = new ArrayList<>();
 
         ImageView characterView;
+
+        Menu menu = new Menu();
+        int WIDTH, HEIGHT;
         int grav = 40;
         int jumpHeight = 35;
         Image background = new Image(Main.class.getResource("res/background.png").toString());
@@ -36,7 +40,7 @@ public class Main extends Application{
             characterView = new ImageView(hero);
             addBackgrounds();
             renderBackgrounds();
-
+            initCharacter();
             Scene scene = new Scene(pane, 800, 600);
 
             window.setScene(scene);
@@ -67,9 +71,15 @@ public class Main extends Application{
                     gravity();
                     checkKeys();
                     backgroundsSetX();
+                    HEIGHT = (int) root.getHeight();
+                    WIDTH = (int) primaryStage.getWidth();
+                 //   System.out.println(HEIGHT);
+
                 }
             }.start();
-
+           // primaryStage.setFullScreen(true);
+            primaryStage.setTitle("Same");
+            primaryStage.setAlwaysOnTop(true);
 
             primaryStage.show();
         }
@@ -79,17 +89,16 @@ public class Main extends Application{
             }
             if(kRight){
                 x -= 5;
+
             }
-            if(kLeft){
+            if(kLeft && x < 0){
                 x += 5;
             }
         }
 
         public void addBackgrounds(){
-           // backgrounds.add(new Background(100, 100, 100, 100));
             for(int i = 0; i < 200; i++){
                 backgroundViewer.add(new ImageView(background));
-
             }
 
         }
@@ -97,30 +106,35 @@ public class Main extends Application{
             for(int i = 0; i < backgroundViewer.size(); i++) {
                 root.getChildren().add(backgroundViewer.get(i));
                 backgroundViewer.get(i).setFitHeight(window.getHeight());
-                backgroundViewer.get(i).setFitWidth(800);
-                backgroundViewer.get(i).setFitHeight(600);
             }
         }
         public void backgroundsSetX(){
             for(int i = 0; i < backgroundViewer.size(); i++){
-                backgroundViewer.get(i).setX(x + (i * 800));
+                backgroundViewer.get(i).setX(x + (i * WIDTH));
+                backgroundViewer.get(i).setFitWidth(WIDTH);
+                backgroundViewer.get(i).setFitHeight(HEIGHT);
+                System.out.println(HEIGHT);
+
             }
         }
 
       public void gravity(){
           characterView.setY(y);
           y += gravity;
-         if(y >= 500){
-             y = 500;
+         if(y >= 400){
+             y = 400;
              grav = 0;
              isJump = false;
          }
       }
 
-
+    public void initCharacter(){
+        characterView.setFitHeight(200);
+        characterView.setFitWidth(100);
+        characterView.setX(500);
+    }
 
       public void jump(){
-
             if(isJump) {
                 y -= jumpHeight + grav;
                 grav -= 2;
