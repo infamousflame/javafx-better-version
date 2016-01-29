@@ -4,6 +4,7 @@ import com.sun.org.apache.xpath.internal.SourceTree;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.image.*;
 import javafx.scene.image.Image;
 import javafx.scene.layout.Pane;
@@ -18,22 +19,25 @@ public class Main extends Application{
         boolean isJump;
         boolean kLeft, kRight, kUp;
 
-        int gravity = 10;
+        byte gravity = 10;
 
         Stage window;
         StackPane pane = new StackPane();
+        Menu menu = new Menu();
         Pane root = new Pane();
+        Scene scene = new Scene(pane, 800, 600);
+        Scene menuScene = new Scene(menu, 1000, 500);
 
         ArrayList<ImageView> backgroundViewer = new ArrayList<>();
 
         ImageView characterView;
 
-        Menu menu = new Menu();
         int WIDTH, HEIGHT;
         int grav = 40;
         int jumpHeight = 35;
         Image background = new Image(Main.class.getResource("res/background.png").toString());
         Image hero = new Image(Main.class.getResource("res/img.png").toString());
+        Button button = new Button("same");
         @Override
         public void start(Stage primaryStage) throws Exception {
             window = primaryStage;
@@ -41,17 +45,23 @@ public class Main extends Application{
             addBackgrounds();
             renderBackgrounds();
             initCharacter();
-            Scene scene = new Scene(pane, 800, 600);
 
             window.setScene(scene);
             pane.getChildren().add(root);
+            pane.getChildren().add(button);
             root.getChildren().add(characterView);
+
+            button.setOnAction(e -> {
+                window.setScene(menuScene);
+            });
+
 
             scene.setOnKeyPressed(event -> {
                 switch (event.getCode()){
                     case UP: kUp = true; break;
                     case LEFT: kLeft = true; break;
                     case RIGHT: kRight = true; break;
+
                 }
             });
             scene.setOnKeyReleased(event -> {
@@ -113,7 +123,6 @@ public class Main extends Application{
                 backgroundViewer.get(i).setX(x + (i * WIDTH));
                 backgroundViewer.get(i).setFitWidth(WIDTH);
                 backgroundViewer.get(i).setFitHeight(HEIGHT);
-                System.out.println(HEIGHT);
 
             }
         }
@@ -131,7 +140,7 @@ public class Main extends Application{
     public void initCharacter(){
         characterView.setFitHeight(200);
         characterView.setFitWidth(100);
-        characterView.setX(500);
+        characterView.setX(300);
     }
 
       public void jump(){
