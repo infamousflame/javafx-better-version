@@ -20,7 +20,7 @@ public class Main extends Application{
         boolean kLeft, kRight, kUp;
 
         byte gravity = 10;
-
+        Image start = new Image(Main.class.getResource("res/Ghoul.jpg").toString());
         Stage window;
         StackPane pane = new StackPane();
         Menu menu = new Menu();
@@ -41,6 +41,7 @@ public class Main extends Application{
         @Override
         public void start(Stage primaryStage) throws Exception {
             window = primaryStage;
+            menu.setImage(start);
             characterView = new ImageView(hero);
             addBackgrounds();
             renderBackgrounds();
@@ -83,7 +84,9 @@ public class Main extends Application{
                     backgroundsSetX();
                     HEIGHT = (int) root.getHeight();
                     WIDTH = (int) primaryStage.getWidth();
-                 //   System.out.println(HEIGHT);
+
+
+                    //   System.out.println(HEIGHT);
 
                 }
             }.start();

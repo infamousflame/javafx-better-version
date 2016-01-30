@@ -5,6 +5,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
+import sample.Main;
 
 public class Menu extends StackPane{
     Button button = new Button("Allah");
@@ -13,15 +14,20 @@ public class Menu extends StackPane{
     ImageView startView;
     int click;
 
-    public Image setImage(String path){
-        start = new Image(path);
+    public void setImage(Image image){
+        start = image;
     }
 
     public Menu(){
         startView = new ImageView(start);
         this.getChildren().add(root);
         this.getChildren().add(button);
-       // this.getChildren().add(startView);
+      /*  if(startView.getImage().toString().equals("null")){
+            System.out.println("no work");
+        }
+
+        */
+        this.getChildren().add(startView);
         button.setOnAction(e -> {
             System.out.println("click");
             click++;
