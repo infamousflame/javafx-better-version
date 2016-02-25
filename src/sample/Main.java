@@ -3,6 +3,7 @@ package sample;
 import com.sun.org.apache.xpath.internal.SourceTree;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
+import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.image.*;
@@ -11,13 +12,15 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import sample.Levels.Menu;
+import sample.Levels.Test;
+import sample.sprites.Bullet;
 
 import java.util.ArrayList;
 
 public class Main extends Application{
         int x, y;
         boolean isJump;
-        boolean kLeft, kRight, kUp;
+        boolean kLeft, kRight, kUp, kE;
 
         byte gravity = 10;
         Image start = new Image(Main.class.getResource("res/Ghoul.jpg").toString());
@@ -29,17 +32,23 @@ public class Main extends Application{
         Scene menuScene = new Scene(menu, 1000, 500);
 
         ArrayList<ImageView> backgroundViewer = new ArrayList<>();
+        ArrayList<Bullet> bullets = new ArrayList<>();
+        Group bulletGroup = new Group();
 
         ImageView characterView;
-
+        Bullet bullet = new Bullet(100, 100, 100, 100, 100);
         int WIDTH, HEIGHT;
         int grav = 40;
         int jumpHeight = 35;
         Image background = new Image(Main.class.getResource("res/background.png").toString());
         Image hero = new Image(Main.class.getResource("res/img.png").toString());
-        Button button = new Button("same");
+
+        boolean next;
+        Test test = new Test();
+
         @Override
         public void start(Stage primaryStage) throws Exception {
+            bullet.setImage(Main.class.getResource("res/Ghoul.jpg").toString());
             window = primaryStage;
             menu.setImage(start);
             characterView = new ImageView(hero);
@@ -48,21 +57,16 @@ public class Main extends Application{
             initCharacter();
 
             window.setScene(scene);
+
             pane.getChildren().add(root);
-            pane.getChildren().add(button);
             root.getChildren().add(characterView);
-
-            button.setOnAction(e -> {
-                window.setScene(menuScene);
-            });
-
 
             scene.setOnKeyPressed(event -> {
                 switch (event.getCode()){
                     case UP: kUp = true; break;
                     case LEFT: kLeft = true; break;
                     case RIGHT: kRight = true; break;
-
+                    case E: kE = true; break;
                 }
             });
             scene.setOnKeyReleased(event -> {
@@ -70,6 +74,7 @@ public class Main extends Application{
                     case UP: kUp = false; break;
                     case LEFT: kLeft = false; break;
                     case RIGHT: kRight = false; break;
+                    case E: kE = false; break;
                 }
             });
 
@@ -84,16 +89,16 @@ public class Main extends Application{
                     backgroundsSetX();
                     HEIGHT = (int) root.getHeight();
                     WIDTH = (int) primaryStage.getWidth();
-
-
+                    renderBullets();
                     //   System.out.println(HEIGHT);
-
                 }
             }.start();
            // primaryStage.setFullScreen(true);
             primaryStage.setTitle("Same");
             primaryStage.setAlwaysOnTop(true);
-
+            if(next){
+                test.start(primaryStage);
+            }
             primaryStage.show();
         }
         public void checkKeys(){
@@ -102,10 +107,12 @@ public class Main extends Application{
             }
             if(kRight){
                 x -= 5;
-
             }
             if(kLeft && x < 0){
                 x += 5;
+            }
+            if(kE){
+                addBullet();
             }
         }
 
@@ -126,7 +133,6 @@ public class Main extends Application{
                 backgroundViewer.get(i).setX(x + (i * WIDTH));
                 backgroundViewer.get(i).setFitWidth(WIDTH);
                 backgroundViewer.get(i).setFitHeight(HEIGHT);
-
             }
         }
 
@@ -146,16 +152,25 @@ public class Main extends Application{
         characterView.setX(300);
     }
 
-      public void jump(){
-            if(isJump) {
-                y -= jumpHeight + grav;
-                grav -= 2;
-            }
+    public void jump(){
+        if(isJump) {
+            y -= jumpHeight + grav;
+            grav -= 2;
         }
+    }
+
+    public void addBullet() {
+        bullets.add(new Bullet(x, y, 100, 100, 100));
+    }
+    public void renderBullets() {
+        for(int i = 0; i < bullets.size(); i++) {
+
+        }
+        bulletGroup.getChildren().add();
+    }
+
         public static void main(String[] args) {
             launch(args);
         }
-
-
 
 }
