@@ -10,6 +10,7 @@ import javafx.scene.image.*;
 import javafx.scene.image.Image;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
+import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
 import sample.Levels.Menu;
 import sample.Levels.Test;
@@ -33,7 +34,8 @@ public class Main extends Application{
 
         ArrayList<ImageView> backgroundViewer = new ArrayList<>();
         ArrayList<Bullet> bullets = new ArrayList<>();
-        Group bulletGroup = new Group();
+
+        Group bulletList = new Group();
 
         ImageView characterView;
         Bullet bullet = new Bullet(100, 100, 100, 100, 100);
@@ -48,12 +50,11 @@ public class Main extends Application{
 
         @Override
         public void start(Stage primaryStage) throws Exception {
-            bullet.setImage(Main.class.getResource("res/Ghoul.jpg").toString());
             window = primaryStage;
             menu.setImage(start);
             characterView = new ImageView(hero);
+
             addBackgrounds();
-            renderBackgrounds();
             initCharacter();
 
             window.setScene(scene);
@@ -87,9 +88,11 @@ public class Main extends Application{
                     gravity();
                     checkKeys();
                     backgroundsSetX();
+                    setMove();
+
                     HEIGHT = (int) root.getHeight();
                     WIDTH = (int) primaryStage.getWidth();
-                    renderBullets();
+
                     //   System.out.println(HEIGHT);
                 }
             }.start();
@@ -99,7 +102,16 @@ public class Main extends Application{
             if(next){
                 test.start(primaryStage);
             }
+            root.getChildren().add(bulletList);
+
             primaryStage.show();
+        }
+
+        public void setMove() {
+            for(int i = 0; i < bullets.size(); i++) {
+                bullets.get(i).move(true);
+                System.out.println("Bullet " + i + " x " + bullets.get(i).getX());
+            }
         }
         public void checkKeys(){
             if(kUp) {
@@ -112,7 +124,9 @@ public class Main extends Application{
                 x += 5;
             }
             if(kE){
-                addBullet();
+                bullets.add(new Bullet(100, 100, 100, 100, 100));
+                bulletList.getChildren().add(bullets.get(bullets.size() - 1).rectangle());
+                System.out.println(bulletList.getChildren().size());
             }
         }
 
@@ -120,7 +134,7 @@ public class Main extends Application{
             for(int i = 0; i < 200; i++){
                 backgroundViewer.add(new ImageView(background));
             }
-
+            renderBackgrounds();
         }
         public void renderBackgrounds(){
             for(int i = 0; i < backgroundViewer.size(); i++) {
@@ -159,15 +173,7 @@ public class Main extends Application{
         }
     }
 
-    public void addBullet() {
-        bullets.add(new Bullet(x, y, 100, 100, 100));
-    }
-    public void renderBullets() {
-        for(int i = 0; i < bullets.size(); i++) {
 
-        }
-        bulletGroup.getChildren().add();
-    }
 
         public static void main(String[] args) {
             launch(args);

@@ -2,6 +2,7 @@ package sample.sprites;
 
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.shape.Rectangle;
 
 import java.util.Random;
 
@@ -13,21 +14,14 @@ public class Bullet {
     public boolean deleteBullet;
     boolean up, down;
     int thresh;
-    Image image;
-    ImageView imageView = new ImageView();
+    Rectangle rect;
     public Bullet(int tempX, int tempY, int width, int height, int recoil){
         x = tempX + xOffset;
         y = tempY + yOffset;
         recoil(recoil);
-        setImageView();
+        rect = new Rectangle(x, y, width, height);
     }
-    public void setImage(String path){
-        image = new Image(path);
-        setImageView();
-    }
-    public void setImageView(){
-        imageView = new ImageView(image);
-    }
+
 
     public int getX(){
         return x;
@@ -41,12 +35,12 @@ public class Bullet {
     public void delete(){
 
     }
-    public ImageView getImageViewer(){
-        return imageView;
+
+    public Rectangle rectangle() {
+        return rect;
     }
     public void move(boolean bool){
-        imageView.setFitHeight(200);
-        imageView.setFitWidth(200);
+
         x += 10;
         if(x < 100000){
             visible = true;
@@ -59,8 +53,7 @@ public class Bullet {
         if(down){
             y += thresh;
         }
-        imageView.setX(x);
-        imageView.setY(y);
+
     }
 
     public void recoil(int intensity){
