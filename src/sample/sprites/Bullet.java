@@ -12,10 +12,11 @@ public class Bullet {
     private int xOffset = 20;
     public boolean visible = true;
     public boolean deleteBullet;
-    boolean up, down;
+    boolean up, down, noRecoil;
     int thresh;
     Rectangle rect;
-    public Bullet(int tempX, int tempY, int width, int height, int recoil){
+
+    public Bullet(int tempX, int tempY, int width, int height, int recoil) {
         x = tempX + xOffset;
         y = tempY + yOffset;
         recoil(recoil);
@@ -23,49 +24,59 @@ public class Bullet {
     }
 
 
-    public int getX(){
+    public int getX() {
         return x;
     }
-    public int getY(){
+
+    public int getY() {
         return y;
     }
-    public boolean getVisible(){
+
+    public boolean getVisible() {
         return visible;
     }
-    public void delete(){
+
+    public void delete() {
 
     }
 
     public Rectangle rectangle() {
         return rect;
     }
-    public void move(boolean bool){
+
+    public void move(boolean bool) {
 
         x += 10;
-        if(x < 100000){
+        if (x < 100000) {
             visible = true;
-        }else{
+        } else {
             visible = false;
         }
-        if(up){
+        if (up) {
             y -= thresh;
         }
-        if(down){
+        if (down) {
             y += thresh;
         }
 
+
     }
 
-    public void recoil(int intensity){
+    public void recoil(int intensity) {
         Random rn = new Random();
         int x = rn.nextInt(2);
-        thresh = rn.nextInt(intensity);
-        if(x == 0){
+        if (intensity != 0) {
+            thresh = rn.nextInt(intensity);
+            down = false;
+            up = false;
+        }
+        if (x == 0) {
             down = true;
-        }else{
+        } else {
             up = true;
         }
+
     }
-    
+
 
 }
