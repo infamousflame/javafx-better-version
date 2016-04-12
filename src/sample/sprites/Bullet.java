@@ -6,7 +6,7 @@ import javafx.scene.shape.Rectangle;
 
 import java.util.Random;
 
-public class Bullet {
+public class Bullet extends ImageView{
     private int x, y;
     private int yOffset = 20;
     private int xOffset = 20;
@@ -24,11 +24,11 @@ public class Bullet {
     }
 
 
-    public int getX() {
+    public int getBulletX() {
         return x;
     }
 
-    public int getY() {
+    public int getBulletY() {
         return y;
     }
 

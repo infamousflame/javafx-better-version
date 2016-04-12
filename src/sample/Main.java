@@ -1,6 +1,8 @@
 package sample;
 
 import javafx.animation.AnimationTimer;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.embed.swing.SwingNode;
 import javafx.scene.Group;
@@ -10,6 +12,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 import sample.Levels.Menu;
 import sample.sprites.Bullet;
 import sample.sprites.Platform;
@@ -34,7 +37,7 @@ public class Main extends Application {
 
     ArrayList<Bullet> bullets = new ArrayList<>();
     Group bulletList = new Group();
-
+    boolean allowShoot;
     ArrayList<Platform> platforms = new ArrayList<>();
     Group platformList = new Group();
     SwingNode swingNode = new SwingNode();
@@ -58,7 +61,8 @@ public class Main extends Application {
         window.setScene(scene);
 
         pane.getChildren().add(root);
-        root.getChildren().add(platformList);
+        pane.getChildren().add(bulletList);
+        //root.getChildren().add(platformList);
         root.getChildren().add(characterView);
 
         scene.setOnKeyPressed(event -> {
@@ -102,8 +106,9 @@ public class Main extends Application {
                 gravity();
                 checkKeys();
                 backgroundsSetX();
-                setMove();
                 checkPlatforms();
+                bullet();
+
                 characterView.setX(-x);
                 HEIGHT = (int) root.getHeight();
                 WIDTH = (int) primaryStage.getWidth();
@@ -118,28 +123,8 @@ public class Main extends Application {
         primaryStage.show();
     }
 
-    public void setMove() {
-        for (int i = 0; i < bullets.size(); i++) {
-            bullets.get(i).move(true);
-            setBulletX(i);
-            setBulletY(i);
-            delBullet(i, 1600);
-        }
-    }
 
-    public void delBullet(int i, int thresh) {
-        if (bulletList.getChildren().get(i).getLayoutX() > thresh) {
-            bulletList.getChildren().remove(i);
-            bullets.remove(i);
-        }
-    }
-    public void setBulletX(int i) {
-        bulletList.getChildren().get(i).setLayoutX(bullets.get(i).getX());
-    }
 
-    public void setBulletY(int i) {
-        bulletList.getChildren().get(i).setLayoutY(bullets.get(i).getY() + 100);
-    }
     public void checkKeys() {
         if (kUp) {
             isJump = true;
@@ -151,11 +136,9 @@ public class Main extends Application {
             x += 5;
         }
         if (kE) {
-            System.out.println(-x);
-            bullets.add(new Bullet(0, y - 200, 10, 10, 0));
-            bulletList.getChildren().add(bullets.get(bullets.size() - 1).rectangle());
-           //System.out.println(bulletList.getChildren().size());
-
+            bullets.add(new Bullet(-x, y, 100, 100, 2));
+            bulletList.getChildren().add(bullets.get(bullets.size() - 1));
+            bullets.get(bullets.size() - 1).setImage(start);
         }
     }
 
@@ -164,6 +147,17 @@ public class Main extends Application {
             if(platformList.getChildren().get(i).intersects(characterView.getBoundsInLocal())){
                 System.out.println("interstected");
             }
+        }
+    }
+
+    public void bullet() {
+        for(int i = 0; i < bullets.size(); i++) {
+            bullets.get(i).move(true);
+            bulletList.getChildren().get(i).setLayoutX(bullets.get(i).getBulletX() + 55);
+            bulletList.getChildren().get(i).setLayoutY(bullets.get(i).getBulletY() + 100);
+            bullets.get(i).setFitWidth(10);
+            bullets.get(i).setFitHeight(10);
+
         }
     }
 
