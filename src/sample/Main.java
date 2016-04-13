@@ -1,10 +1,7 @@
 package sample;
 
 import javafx.animation.AnimationTimer;
-import javafx.animation.KeyFrame;
-import javafx.animation.Timeline;
 import javafx.application.Application;
-import javafx.embed.swing.SwingNode;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
@@ -12,7 +9,6 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
-import javafx.util.Duration;
 import sample.Levels.Menu;
 import sample.sprites.Bullet;
 import sample.sprites.Platform;
@@ -37,10 +33,9 @@ public class Main extends Application {
 
     ArrayList<Bullet> bullets = new ArrayList<>();
     Group bulletList = new Group();
-    boolean allowShoot;
+
     ArrayList<Platform> platforms = new ArrayList<>();
     Group platformList = new Group();
-    SwingNode swingNode = new SwingNode();
     ImageView characterView;
     int WIDTH, HEIGHT;
     int grav = 40;
@@ -123,8 +118,6 @@ public class Main extends Application {
         primaryStage.show();
     }
 
-
-
     public void checkKeys() {
         if (kUp) {
             isJump = true;
@@ -161,11 +154,11 @@ public class Main extends Application {
         }
     }
 
-
     public void addPlatforms(int x, int y, int width, int height) {
         platforms.add(new Platform(x, y, width, height, false, false));
         platformList.getChildren().add(platforms.get(platforms.size() - 1).platform());
     }
+
     public void addBackgrounds() {
         for (int i = 0; i < 200; i++) {
             backgroundViewer.add(new ImageView(background));
