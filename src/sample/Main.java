@@ -14,6 +14,7 @@ import sample.sprites.Bullet;
 import sample.sprites.Platform;
 
 import java.util.ArrayList;
+import java.util.Timer;
 
 public class Main extends Application {
     int x, y;
@@ -30,7 +31,6 @@ public class Main extends Application {
     Scene scene = new Scene(pane, 800, 600);
 
     ArrayList<ImageView> backgroundViewer = new ArrayList<>();
-
     ArrayList<Bullet> bullets = new ArrayList<>();
     Group bulletList = new Group();
 
@@ -43,7 +43,11 @@ public class Main extends Application {
     Image background = new Image(Main.class.getResource("res/background.png").toString());
     Image hero = new Image(Main.class.getResource("res/img.png").toString());
 
-    @Override
+    int shootCounter;
+    int shootSpeed = 2;
+    boolean allowShoot;
+
+
     public void start(Stage primaryStage) throws Exception {
         window = primaryStage;
         menu.setImage(start);
@@ -74,6 +78,7 @@ public class Main extends Application {
                 case E:
                     kE = true;
                     break;
+
             }
         });
         scene.setOnKeyReleased(event -> {
@@ -118,6 +123,8 @@ public class Main extends Application {
         primaryStage.show();
     }
 
+
+
     public void checkKeys() {
         if (kUp) {
             isJump = true;
@@ -129,9 +136,17 @@ public class Main extends Application {
             x += 5;
         }
         if (kE) {
-            bullets.add(new Bullet(-x, y, 100, 100, 2));
-            bulletList.getChildren().add(bullets.get(bullets.size() - 1));
-            bullets.get(bullets.size() - 1).setImage(start);
+            shootCounter++;
+            if (shootCounter > shootSpeed) {
+                allowShoot = true;
+                shootCounter = 0;
+            }
+            if (allowShoot) {
+                bullets.add(new Bullet(-x, y, 100, 100, 2));
+                bulletList.getChildren().add(bullets.get(bullets.size() - 1));
+                bullets.get(bullets.size() - 1).setImage(start);
+                allowShoot = false;
+            }
         }
     }
 

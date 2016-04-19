@@ -13,9 +13,16 @@ public class Bullet extends ImageView{
     public boolean visible = true;
     public boolean deleteBullet;
     boolean up, down, noRecoil;
-    int thresh;
+    int thresh, shootSpeed;
     Rectangle rect;
 
+    public Bullet(int tempX, int tempY, int width, int height, int recoil, int shootSpeed) {
+        x = tempX + xOffset;
+        y = tempY + yOffset;
+        recoil(recoil);
+        rect = new Rectangle(x, y, width, height);
+        this.shootSpeed = shootSpeed;
+    }
     public Bullet(int tempX, int tempY, int width, int height, int recoil) {
         x = tempX + xOffset;
         y = tempY + yOffset;
@@ -23,6 +30,13 @@ public class Bullet extends ImageView{
         rect = new Rectangle(x, y, width, height);
     }
 
+    public int getShootSpeed(){
+        return shootSpeed;
+    }
+
+    public void setShootSpeed(int shootSpeed) {
+        this.shootSpeed = shootSpeed;
+    }
 
     public int getBulletX() {
         return x;
