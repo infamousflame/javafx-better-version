@@ -14,7 +14,6 @@ import sample.sprites.Bullet;
 import sample.sprites.Platform;
 
 import java.util.ArrayList;
-import java.util.Timer;
 
 public class Main extends Application {
     int x, y;
