@@ -9,9 +9,8 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
-import sample.Levels.Menu;
 import sample.sprites.Bullet;
-import sample.sprites.Platform;
+import sample.sprites.Hero;
 
 import java.util.ArrayList;
 
@@ -24,65 +23,66 @@ public class Main extends Application {
     Image start = new Image(Main.class.getResource("res/Ghoul.jpg").toString());
 
     Stage window;
-    StackPane pane = new StackPane();
-    Menu menu = new Menu();
-    Pane root = new Pane();
-    Scene scene = new Scene(pane, 800, 600);
+    StackPane stackpane = new StackPane();
+    Pane pane = new Pane();
+    Scene scene = new Scene(stackpane, 800, 600);
 
     ArrayList<ImageView> backgroundViewer = new ArrayList<>();
-    ArrayList<Bullet> bullets = new ArrayList<>();
-    Group bulletList = new Group();
+    ArrayList<Bullet> bulletList = new ArrayList<>();
+    Group bulletGroup = new Group();
 
-    ArrayList<Platform> platforms = new ArrayList<>();
-    Group platformList = new Group();
-    ImageView characterView;
     int WIDTH, HEIGHT;
     int grav = 40;
     int jumpHeight = 35;
     Image background = new Image(Main.class.getResource("res/background.png").toString());
     Image hero = new Image(Main.class.getResource("res/img.png").toString());
 
+    ImageView characterView = new ImageView(hero);
+    Hero character = new Hero(characterView);
+
     int shootCounter;
     int shootSpeed = 2;
     boolean allowShoot;
-
+    double offset = scene.getWidth() / 4;
 
     public void start(Stage primaryStage) throws Exception {
-        window = primaryStage;
-        menu.setImage(start);
-        characterView = new ImageView(hero);
+        /** Stage>Scene>Stackpane>Pane>Child-Elements **/
 
+        character.setOffset(offset);
+
+        window = primaryStage;
         addBackgrounds();
         initCharacter();
-        addPlatforms(200, 200, 200, 200);
-
         window.setScene(scene);
 
-        pane.getChildren().add(root);
-        pane.getChildren().add(bulletList);
-        //root.getChildren().add(platformList);
-        root.getChildren().add(characterView);
+        stackpane.getChildren().add(pane);
+
+        pane.getChildren().add(bulletGroup);
+        pane.getChildren().add(character.getImageView());
+        new Thread(character).start();
 
         scene.setOnKeyPressed(event -> {
             switch (event.getCode()) {
-                case UP:
+                case SPACE:
                     kUp = true;
+                    character.setKey("u");
                     break;
                 case LEFT:
                     kLeft = true;
+                    character.setKey("l");
                     break;
                 case RIGHT:
                     kRight = true;
+                    character.setKey("r");
                     break;
                 case E:
                     kE = true;
                     break;
-
             }
         });
         scene.setOnKeyReleased(event -> {
             switch (event.getCode()) {
-                case UP:
+                case SPACE:
                     kUp = false;
                     break;
                 case LEFT:
@@ -97,28 +97,26 @@ public class Main extends Application {
             }
         });
 
-        final long startNanoTime = System.nanoTime();
-
+        /** Game Loop **/
         new AnimationTimer() {
             public void handle(long currentNanoTime) {
                 jump();
                 gravity();
                 checkKeys();
                 backgroundsSetX();
-                checkPlatforms();
                 bullet();
-
-                characterView.setX(-x);
-                HEIGHT = (int) root.getHeight();
+                //characterView.setX(-x + offset);
+                HEIGHT = (int) pane.getHeight();
                 WIDTH = (int) primaryStage.getWidth();
-                root.setTranslateX((double) x);
+                pane.setTranslateX((double) x);
+                character.main();
             }
         }.start();
+
+        primaryStage.setOnCloseRequest(event -> System.exit(0));
+        /** Stage Maniplulation **/
         primaryStage.setTitle("Same");
         primaryStage.setAlwaysOnTop(true);
-
-        root.getChildren().add(bulletList);
-
         primaryStage.show();
     }
 
@@ -130,47 +128,37 @@ public class Main extends Application {
         }
         if (kRight) {
             x -= 5;
+            character.setX(x);
         }
         if (kLeft && x < 0) {
             x += 5;
+            character.setX(x);
         }
         if (kE) {
+
             shootCounter++;
             if (shootCounter > shootSpeed) {
                 allowShoot = true;
                 shootCounter = 0;
             }
+
             if (allowShoot) {
-                bullets.add(new Bullet(-x, y, 100, 100, 2));
-                bulletList.getChildren().add(bullets.get(bullets.size() - 1));
-                bullets.get(bullets.size() - 1).setImage(start);
+                bulletList.add(new Bullet(-x + (int) offset, y, 100, 100, 2));
+                bulletGroup.getChildren().add(bulletList.get(bulletList.size() - 1));
+                bulletList.get(bulletList.size() - 1).setImage(start);
                 allowShoot = false;
             }
         }
     }
 
-    public void checkPlatforms() {
-        for(int i = 0; i < platforms.size(); i++) {
-            if(platformList.getChildren().get(i).intersects(characterView.getBoundsInLocal())){
-                System.out.println("interstected");
-            }
-        }
-    }
-
     public void bullet() {
-        for(int i = 0; i < bullets.size(); i++) {
-            bullets.get(i).move(true);
-            bulletList.getChildren().get(i).setLayoutX(bullets.get(i).getBulletX() + 55);
-            bulletList.getChildren().get(i).setLayoutY(bullets.get(i).getBulletY() + 100);
-            bullets.get(i).setFitWidth(10);
-            bullets.get(i).setFitHeight(10);
-
+        for(int i = 0; i < bulletList.size(); i++) {
+            bulletList.get(i).move(true);
+            bulletGroup.getChildren().get(i).setLayoutX(bulletList.get(i).getBulletX() + 55);
+            bulletGroup.getChildren().get(i).setLayoutY(bulletList.get(i).getBulletY() + 100);
+            bulletList.get(i).setFitWidth(10);
+            bulletList.get(i).setFitHeight(10);
         }
-    }
-
-    public void addPlatforms(int x, int y, int width, int height) {
-        platforms.add(new Platform(x, y, width, height, false, false));
-        platformList.getChildren().add(platforms.get(platforms.size() - 1).platform());
     }
 
     public void addBackgrounds() {
@@ -181,9 +169,9 @@ public class Main extends Application {
     }
 
     public void renderBackgrounds() {
-        for (int i = 0; i < backgroundViewer.size(); i++) {
-            root.getChildren().add(backgroundViewer.get(i));
-            backgroundViewer.get(i).setFitHeight(window.getHeight());
+        for (ImageView aBackgroundViewer : backgroundViewer) {
+            pane.getChildren().add(aBackgroundViewer);
+            aBackgroundViewer.setFitHeight(window.getHeight());
         }
     }
 
@@ -218,7 +206,6 @@ public class Main extends Application {
 
         }
     }
-
 
     public static void main(String[] args) {
         launch(args);

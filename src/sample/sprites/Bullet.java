@@ -13,7 +13,7 @@ public class Bullet extends ImageView{
     public boolean visible = true;
     public boolean deleteBullet;
     boolean up, down, noRecoil;
-    int thresh, shootSpeed;
+    int thresh, shootSpeed, bulletSpeed;
     Rectangle rect;
 
     public Bullet(int tempX, int tempY, int width, int height, int recoil, int shootSpeed) {
@@ -53,14 +53,19 @@ public class Bullet extends ImageView{
     public void delete() {
 
     }
-
+    public void setBulletSpeed(int speed){
+        bulletSpeed = speed;
+    }
+    public int getBulletSpeed(int speed){
+        return bulletSpeed;
+    }
     public Rectangle rectangle() {
         return rect;
     }
 
     public void move(boolean bool) {
 
-        x += 10;
+        x += 30;
         if (x < 100000) {
             visible = true;
         } else {

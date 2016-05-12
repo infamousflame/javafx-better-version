@@ -1,5 +1,6 @@
 package sample.sprites;
 
+import javafx.scene.image.ImageView;
 import javafx.scene.shape.Rectangle;
 
 /**
@@ -8,7 +9,7 @@ import javafx.scene.shape.Rectangle;
 
 
 
-public class Platform {
+public class Platform extends ImageView{
     int x, y, width, height;
     boolean rtouch, ltouch;
 
@@ -21,11 +22,11 @@ public class Platform {
     }
 
 
-    public int getX() {
+    public int getPlatformX() {
         return x;
     }
 
-    public int getY() {
+    public int getPlatformY() {
         return y;
     }
 
